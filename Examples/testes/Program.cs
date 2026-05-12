@@ -11,9 +11,11 @@ class Program
 		{
 			appName = "testes",
 		};
-		if (!SK.Initialize(settings))
-			return;
 
+		if (!SK.Initialize(settings))
+		{
+			return;
+		}
 
 		// Create assets used by the app
 		Pose cubePose = new Pose(0, 0, -0.5f);
@@ -22,10 +24,12 @@ class Program
 			Material.UI);
 
 		Matrix floorTransform = Matrix.TS(0, -1.5f, 0, new Vec3(30, 0.1f, 30));
-		//Material floorMaterial  = new Material("floor.hlsl");
 		Material floorMaterial = Material.Default.Copy();
 		floorMaterial.Transparency = Transparency.Blend;
 
+		var handMat = Material.Default.Copy();
+		handMat.Transparency = Transparency.None;
+		Input.HandMaterial(Handed.Max, handMat);
 
 		// Core application loop
 		SK.Run(() =>
