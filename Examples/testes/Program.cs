@@ -16,18 +16,20 @@ class Program
 
 
 		// Create assets used by the app
-		Pose  cubePose = new Pose(0, 0, -0.5f);
-		Model cube     = Model.FromMesh(
-			Mesh.GenerateRoundedCube(Vec3.One*0.1f, 0.02f),
+		Pose cubePose = new Pose(0, 0, -0.5f);
+		Model cube = Model.FromMesh(
+			Mesh.GenerateRoundedCube(Vec3.One * 0.1f, 0.02f),
 			Material.UI);
 
-		Matrix   floorTransform = Matrix.TS(0, -1.5f, 0, new Vec3(30, 0.1f, 30));
-		Material floorMaterial  = new Material("floor.hlsl");
+		Matrix floorTransform = Matrix.TS(0, -1.5f, 0, new Vec3(30, 0.1f, 30));
+		//Material floorMaterial  = new Material("floor.hlsl");
+		Material floorMaterial = Material.Default.Copy();
 		floorMaterial.Transparency = Transparency.Blend;
 
 
 		// Core application loop
-		SK.Run(() => {
+		SK.Run(() =>
+		{
 			if (Device.DisplayBlend == DisplayBlend.Opaque)
 				Mesh.Cube.Draw(floorMaterial, floorTransform);
 
