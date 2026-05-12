@@ -10,6 +10,11 @@ class TestTextStyle : ITest
 	public void Initialize()
 	{
 		Tests.RunForFrames(2);
+		// macOS may not have these Windows/specialized families installed;
+		// keep scene stable by falling back to Default.Font explicitly.
+		Font family1 = Font.FromFamily("NotoSansOsage") ?? Default.Font;
+		Font family2 = Font.FromFamily("Nirmala UI, Segoe UI") ?? Default.Font;
+
 		style1 = Text.MakeStyle(
 			Font.FromFile("aileron_font.ttf") ?? Default.Font,
 			2 * U.cm,
@@ -21,12 +26,12 @@ class TestTextStyle : ITest
 			Color.HSV(.33f,.5f,1));
 
 		style3 = Text.MakeStyle(
-			Font.FromFamily("NotoSansOsage") ?? Default.Font,
+			family1,
 			2 * U.cm,
 			Color.HSV(0, 1, 1));
 
 		style4 = Text.MakeStyle(
-			Font.FromFamily("Nirmala UI, Segoe UI") ?? Default.Font,
+			family2,
 			2 * U.cm,
 			Color.HSV(0, 1, 1));
 	}

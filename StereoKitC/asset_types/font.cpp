@@ -178,6 +178,10 @@ bool font_source_load_data(font_source_t* font) {
 	uint8_t      *data       = (uint8_t*)font->file;
 	uint16_t      cmap_fmt   = (data[font->info.index_map] << 8) | data[font->info.index_map + 1];
 	bool          cmap_ok    = cmap_fmt == 0 || cmap_fmt == 4 || cmap_fmt == 6 || cmap_fmt == 12 || cmap_fmt == 13;
+	if (!cmap_ok) {
+		log_warnf("Skipping font with unsupported cmap format %d: %s", cmap_fmt, font->name);
+		return false;
+	}
 
 	font->scale = stbtt_ScaleForPixelHeight(&font->info, (float)font_resolution);
 
@@ -584,9 +588,12 @@ void font_update_texture(font_t font) {
 
 font_glyph_t font_find_glyph(font_t font, char32_t character) {
 	for (int32_t i = 0; i < font->font_ids.count; i++) {
-		int32_t glyph = stbtt_FindGlyphIndex(&font_sources[font->font_ids[i]].info, character);
+		int32_t src_id = font->font_ids[i];
+		if (src_id < 0 || src_id >= font_sources.count) continue;
+		if (font_sources[src_id].file == nullptr)      continue;
+		int32_t glyph = stbtt_FindGlyphIndex(&font_sources[src_id].info, character);
 		if (glyph > 0) {
-			return { glyph, font->font_ids[i] };
+			return { glyph, src_id };
 		}
 	}
 	return { 0, -1 };

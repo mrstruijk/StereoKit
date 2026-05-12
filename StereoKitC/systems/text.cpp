@@ -134,13 +134,19 @@ text_style_t text_make_style_shader(font_t font, float layout_height, shader_t s
 ///////////////////////////////////////////
 
 text_style_t text_make_style_mat(font_t font, float layout_height, material_t material, color128 color) {
+	if (font == nullptr) {
+		log_err("text_make_style was given a null font!");
+		// Guard against null-deref. Return default style when available.
+		return text_styles.count > 0 ? 0 : sk_default_text_style;
+	}
+	if (material == nullptr) {
+		log_err("text_make_style_mat was given a null material!");
+		return text_styles.count > 0 ? 0 : sk_default_text_style;
+	}
+
 	uint32_t       id     = (uint32_t)(font->header.id << 16 | ((asset_header_t*)material)->id);
 	int32_t        index  = 0;
 	text_buffer_t *buffer = nullptr;
-
-	if (font == nullptr) {
-		log_err("text_make_style was given a null font!");
-	}
 	
 	// Find or make a buffer for this style
 	for (int32_t i = 0; i < text_buffers.count; i++) {

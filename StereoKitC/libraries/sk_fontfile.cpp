@@ -142,7 +142,16 @@ void fontfile_from_css(const char* fontlist_utf8, font_fallback_info_t** out_inf
 
 			strncpy(data[count].name, trimmed, sizeof(data[count].name));
 			char* folder = fontfile_folder();
-			snprintf(data[count].filepath, 256, "%s/%s", folder, file);
+			// macOS can return an absolute path from fontfile_name_to_path;
+			// avoid prefixing folder again (e.g. /System/Library/Fonts///System/Library/Fonts/Helvetica.ttc).
+			bool is_absolute =
+				file[0] == '/'
+#if defined(_WIN32)
+				|| (strlen(file) > 1 && file[1] == ':')
+#endif
+				;
+			if (is_absolute) snprintf(data[count].filepath, 256, "%s", file);
+			else             snprintf(data[count].filepath, 256, "%s%s", folder, file);
 			data[count].scale = 1;
 			count += 1;
 

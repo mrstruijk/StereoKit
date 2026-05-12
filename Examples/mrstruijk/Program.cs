@@ -15,38 +15,39 @@ class Program
 
 	// The base settings we use for this test app. Some of these, like mode,
 	// are overridden, particularly when running tests.
-	static SKSettings settings = new SKSettings {
-		appName         = "StereoKit C#",
+	static SKSettings settings = new SKSettings
+	{
+		appName = "StereoKit C#",
 		blendPreference = DisplayBlend.AnyTransparent,
-		mode            = AppMode.XR,
-		renderScaling   = 1.5f,
+		mode = AppMode.XR,
+		renderScaling = 1.5f,
 	};
 
-	static Mesh      floorMesh;
-	static Material  floorMat;
-	static Pose      windowDemoPose = new Pose(-0.7f, 0, -0.3f, Quat.LookDir(1, 0, 1));
-	static Sprite    powerButton;
+	static Mesh floorMesh;
+	static Material floorMat;
+	static Pose windowDemoPose = new Pose(-0.7f, 0, -0.3f, Quat.LookDir(1, 0, 1));
+	static Sprite powerButton;
 	static SceneType sceneCategory = SceneType.Demos;
 
 	public static LogWindow WindowLog;
-	public static bool      WindowDemoShow = false;
+	public static bool WindowDemoShow = false;
 
 	static void Main(string[] args)
 	{
 		// CLI arguments
-		bool headless            =  ParamPresent(args, "-headless");
-		bool xr                  =  ParamPresent(args, "-xr"); // Force XR in testing mode
-		Tests.IsTesting          =  ParamPresent(args, "-test");
-		Tests.MakeScreenshots    = !ParamPresent(args, "-noscreens");
-		Tests.ScreenshotRoot     =  ParamVal    (args, "-screenfolder",     "../../../tools/screenshots");
-		Tests.GltfFolders        =  ParamVal    (args, "-gltf",             null); // "C:\\Tools\\glTF-Sample-Models-master\\2.0";
-		Tests.GltfScreenshotRoot =  ParamVal    (args, "-gltfscreenfolder", null);
-		Tests.TestSingle         =  ParamPresent(args, "-start");
-		startTest                =  ParamVal    (args, "-start",            startTest);
+		bool headless = ParamPresent(args, "-headless");
+		bool xr = ParamPresent(args, "-xr"); // Force XR in testing mode
+		Tests.IsTesting = ParamPresent(args, "-test");
+		Tests.MakeScreenshots = !ParamPresent(args, "-noscreens");
+		Tests.ScreenshotRoot = ParamVal(args, "-screenfolder", "../../../tools/screenshots");
+		Tests.GltfFolders = ParamVal(args, "-gltf", null); // "C:\\Tools\\glTF-Sample-Models-master\\2.0";
+		Tests.GltfScreenshotRoot = ParamVal(args, "-gltfscreenfolder", null);
+		Tests.TestSingle = ParamPresent(args, "-start");
+		startTest = ParamVal(args, "-start", startTest);
 
 		if (Tests.IsTesting)
 		{
-			settings.mode        = headless ? AppMode.Offscreen : xr ? AppMode.XR : AppMode.Simulator;
+			settings.mode = headless ? AppMode.Offscreen : xr ? AppMode.XR : AppMode.Simulator;
 			settings.standbyMode = StandbyMode.None;
 		}
 
@@ -71,10 +72,10 @@ class Program
 	{
 		floorMat = new Material("Shaders/floor_shader.hlsl");
 		floorMat.Transparency = Transparency.Blend;
-		floorMat.QueueOffset  = -11;
-		floorMat["radius"]    = new Vec4(5, 10, 0, 0);
+		floorMat.QueueOffset = -11;
+		floorMat["radius"] = new Vec4(5, 10, 0, 0);
 
-		floorMesh   = Mesh.GeneratePlane(V.XY(40,40), Vec3.Up, Vec3.Forward);
+		floorMesh = Mesh.GeneratePlane(V.XY(40, 40), Vec3.Up, Vec3.Forward);
 		powerButton = Sprite.FromTex(Tex.FromFile("power.png"));
 
 		Tests.FindTests();
@@ -83,9 +84,9 @@ class Program
 
 		if (Tests.IsTesting)
 		{
-			UI  .EnableFarInteract = false;
-			Time.Scale             = 0;
-			WindowDemoShow         = false;
+			UI.EnableFarInteract = false;
+			Time.Scale = 0;
+			WindowDemoShow = false;
 		}
 		else
 		{
@@ -118,8 +119,8 @@ class Program
 		if (Device.DisplayBlend == DisplayBlend.Opaque)
 			floorMesh.Draw(floorMat, World.HasBounds ? World.BoundsPose.ToMatrix() : Matrix.T(0, -1.5f, 0), Color.White);
 
-		CheckFocus    ();
-		Tests.Update  ();
+		CheckFocus();
+		Tests.Update();
 		WindowDemoStep();
 	}
 
@@ -149,22 +150,22 @@ class Program
 
 		// Now display a nice, lined-up collection of buttons for each
 		// demo/test in the current category.
-		int        start          = 0;
-		float      currWidthTotal = 0;
-		UISettings uiSettings     = UI.Settings;
-		TextStyle  style          = UI.TextStyle;
-		float      windowWidth    = UI.LayoutRemaining.x;
+		int start = 0;
+		float currWidthTotal = 0;
+		UISettings uiSettings = UI.Settings;
+		TextStyle style = UI.TextStyle;
+		float windowWidth = UI.LayoutRemaining.x;
 		for (int i = 0; i < Tests.Count(sceneCategory); i++)
 		{
-			float width = Text.SizeLayout(Tests.GetTestName(sceneCategory,i), style).x + uiSettings.padding * 2;
-			if (currWidthTotal + (width+uiSettings.gutter) > windowWidth)
+			float width = Text.SizeLayout(Tests.GetTestName(sceneCategory, i), style).x + uiSettings.padding * 2;
+			if (currWidthTotal + (width + uiSettings.gutter) > windowWidth)
 			{
-				float inflate = (windowWidth - (currWidthTotal-uiSettings.gutter+0.0001f)) / (i - start);
+				float inflate = (windowWidth - (currWidthTotal - uiSettings.gutter + 0.0001f)) / (i - start);
 				for (int t = start; t < i; t++)
 				{
-					string name      = Tests.GetTestName(sceneCategory,t);
-					float  currWidth = Text.SizeLayout(name, style).x + uiSettings.padding * 2 + inflate;
-					if (UI.Radio(name, Tests.IsActive(sceneCategory, t),  null, null, UIBtnLayout.None, new Vec2(currWidth, 0) ))
+					string name = Tests.GetTestName(sceneCategory, t);
+					float currWidth = Text.SizeLayout(name, style).x + uiSettings.padding * 2 + inflate;
+					if (UI.Radio(name, Tests.IsActive(sceneCategory, t), null, null, UIBtnLayout.None, new Vec2(currWidth, 0)))
 						Tests.SetTestActive(sceneCategory, t);
 					UI.SameLine();
 				}
@@ -176,8 +177,8 @@ class Program
 		}
 		for (int t = start; t < Tests.Count(sceneCategory); t++)
 		{
-			string name      = Tests.GetTestName(sceneCategory, t);
-			float  currWidth = Text.SizeLayout(name, style).x + uiSettings.padding * 2;
+			string name = Tests.GetTestName(sceneCategory, t);
+			float currWidth = Text.SizeLayout(name, style).x + uiSettings.padding * 2;
 			if (UI.Radio(name, Tests.IsActive(sceneCategory, t), null, null, UIBtnLayout.None, new Vec2(currWidth, 0)))
 				Tests.SetTestActive(sceneCategory, t);
 			UI.SameLine();
@@ -199,13 +200,13 @@ class Program
 	}
 	/// :End:
 
-	static bool ParamPresent(string[] args, string param) 
+	static bool ParamPresent(string[] args, string param)
 		=> Array.IndexOf(args, param) != -1;
 	static string ParamVal(string[] args, string param, string defaultVal)
 	{
 		int index = Array.IndexOf(args, param);
 		return (index == -1 || index + 1 >= args.Length)
-			? defaultVal 
+			? defaultVal
 			: args[index + 1];
 	}
 }
