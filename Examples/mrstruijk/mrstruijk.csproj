@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <OutputPath>..\..\bin\x64_$(Configuration)\mrstruijk\</OutputPath>
+    <RunWorkingDirectory>$(OutputPath)</RunWorkingDirectory>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <SKAssetFolder>..\Assets</SKAssetFolder>
+    <SKAssetDestination>Assets</SKAssetDestination>
+    <SKShowDebugVars>true</SKShowDebugVars>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+  <!-- IF YOU ARE LOOKING AT THIS FILE AS REFERENCE, I recommend that you
+	     do not. This file 'emulates' the NuGet package's behavior, since we
+	     can't directly reference a NuGet output without lots of pain and
+	     suffering. Check here instead: https://stereokit.net/Pages/Guides/Learning-Resources.html -->
+  <!-- Exclude the subfolders for different platform projects -->
+  <ItemGroup>
+    <Compile Remove="mrstruijk_NetAndroid\**"></Compile>
+    <Compile Remove="mrstruijk_AndroidService\**"></Compile>
+    <EmbeddedResource Remove="mrstruijk_NetAndroid\**"></EmbeddedResource>
+    <EmbeddedResource Remove="mrstruijk_AndroidService\**"></EmbeddedResource>
+    <None Remove="mrstruijk_NetAndroid\**"></None>
+    <None Remove="mrstruijk_AndroidService\**"></None>
+  </ItemGroup>
+  <!-- This guide file shouldn't be compiled -->
+  <ItemGroup>
+    <Compile Remove="Guides\GuideGettingStarted.cs"></Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Guides\GuideGettingStarted.cs"></None>
+  </ItemGroup>
+  <!-- Include the StereoKit project manually. This is similar to including the
+	     StereoKit NuGet, but different because C# cannot consume a NuGet package
+	     directly. -->
+  <Import Project="$(ProjectDir)..\..\StereoKit\BuildStereoKitSDK.targets"></Import>
+</Project>
