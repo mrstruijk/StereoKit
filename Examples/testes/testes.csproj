@@ -20,9 +20,6 @@
   <ItemGroup>
     <Compile Remove="testes_NetAndroid\**"></Compile>
     <Compile Remove="testes_AndroidService\**"></Compile>
-    <!-- sk-multi template includes Android sources under Platforms/Android.
-         Exclude them from the desktop .NET project. -->
-    <Compile Remove="Platforms\Android\**\*.cs"></Compile>
     <EmbeddedResource Remove="testes_NetAndroid\**"></EmbeddedResource>
     <EmbeddedResource Remove="testes_AndroidService\**"></EmbeddedResource>
     <None Remove="testes_NetAndroid\**"></None>
@@ -34,6 +31,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Guides\GuideGettingStarted.cs"></None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- sk-multi template includes Android sources under Platforms/Android.
+         Exclude them from the desktop .NET project. -->
+    <Compile Remove="Platforms\Android\**\*.cs"></Compile>
+    <Compile Remove="Projects\**\*.cs"></Compile>
+    <Compile Remove="Projects\**\obj\**\*.cs"></Compile>
+    <Compile Remove="Projects\**\bin\**\*.cs"></Compile>
+    <None Remove="Projects\**"></None>
+    <EmbeddedResource Remove="Projects\**"></EmbeddedResource>
   </ItemGroup>
   <!-- Include the StereoKit project manually. This is similar to including the
 	     StereoKit NuGet, but different because C# cannot consume a NuGet package
